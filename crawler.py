@@ -95,7 +95,7 @@ def crawler(cmdline=None):
 
 
 def parse(link, article_id, board):
-    print('Processing article:', article_id)
+    # print('Processing article:', article_id)
     resp = requests.get(url=link, cookies={'over18': '1'}, verify=VERIFY)
     if resp.status_code != 200:
         print('invalid url:', resp.url)
@@ -176,25 +176,23 @@ def parse(link, article_id, board):
                      b, 'push': p, 'boo': b, "neutral": n}
 
     exprTitle = re.compile(
-        u(r'(Re:)|(公告)|(\[妞告 \])|(\版\主)|(版主卸任)|(\Ψ公告\Ψ)'))
+        u'(Re:)|(公告)|(\[妞告\])|(版主)|(版主卸任)|(Ψ公告Ψ)')
     exprContent = re.compile(
-        u(r'(引述)|(之銘言)|(發信人)|(\版\主)'))
+        u'(引述)|(之銘言)|(發信人)|(版主)')
 
-    if p - b <= 0 or n > p or re.match(exprTitle, title) != None or re.match(exprContent, content) != None:
+    if p < b or p < 100 or p < n or re.match(exprTitle, title) != None or re.match(exprContent, content) != None:
         return
     # print 'msgs', messages
     # print 'mscounts', message_count
 
-    print(title)
-    print(re.match(exprTitle, title))
     # json data
     data = {
         # 'board': board,
-        # 'article_id': article_id, 
+        'article_id': article_id,
+        'url': link,
         'article_title': title,
         'author': author,
         'date': date,
-        'content': content,
         # 'ip': ip,
         'message_conut': message_count,
         # 'messages': messages
